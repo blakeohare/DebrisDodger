@@ -1,0 +1,88 @@
+ASTEROID_COLOR = [100, 80, 50];
+PARTICLE_COLOR = [180, 180, 180];
+SHIP_COLOR = [255, 255, 255];
+BEACON_COLOR = [255, 0, 0];
+
+class Sprite {
+	constructor(type, x, y) {
+		this.type = type;
+		this.x = x + 0.0;
+		this.y = y + 0.0;
+		this.theta = $random() * TWO_PI;
+		this.vx = $random() * 3;
+		this.vy = $random() * 3;
+		this.radius = 1.0;
+		this.dead = false;
+		this.ttl = -1;
+		this.last_drawn = -1;
+		
+		switch (type) {
+			case 'player':
+				this.radius = 10.0;
+				this.vx = 0.0;
+				this.vy = 0.0;
+				break;
+			case 'asteroid':
+				this.radius = $random() * 200 + 10;
+				break;
+			case 'beacon':
+				this.radius = 8.0;
+				break;
+			case 'particle':
+				this.radius = 2.0;
+				this.vx = 0.0;
+				this.vy = 0.0;
+				break;
+			default:
+				break;
+		}
+	}
+	
+	function update(world) {
+		this.x += this.vx;
+		this.y += this.vy;
+		if (this.ttl-- == 0) {
+			this.dead = true;
+		}
+	}
+	
+	function render(rc, xoffset, yoffset) {
+		x = this.x + xoffset;
+		y = this.y + yoffset;
+		left = $floor(x - this.radius);
+		width = $floor(this.radius * 2);
+		top = $floor(y - this.radius);
+		height = $floor(this.radius * 2);
+		right = left + width;
+		bottom = top + height;
+		if (right < 0 || left > GAME_WIDTH || bottom < 0 || top > GAME_HEIGHT) return;
+		
+		switch (this.type) {
+			case 'particle':
+				color = PARTICLE_COLOR;
+				break;
+			case 'asteroid':
+				color = ASTEROID_COLOR;
+				break;
+			case 'beacon':
+				color = BEACON_COLOR;
+				break;
+			default:
+				this.last_drawn = rc;
+				a = this.theta;
+				ptleft = this.theta - PI * 3 / 4;
+				ptright = this.theta + PI * 3 / 4;
+				ax = $floor($cos(a) * this.radius) + x;
+				ay = $floor($sin(a) * this.radius) + y;
+				bx = $floor($cos(ptleft) * this.radius / 2) + x;
+				by = $floor($sin(ptleft) * this.radius / 2) + y;
+				cx = $floor($cos(ptright) * this.radius / 2) + x;
+				cy = $floor($sin(ptright) * this.radius / 2) + y;
+				$gfx_draw_triangle(
+					$floor(ax), $floor(ay), $floor(bx), $floor(by), $floor(cx), $floor(cy), 255, 255, 255, 255);
+				return;
+		}
+		
+		$gfx_draw_ellipse(left, top, width, height, color[0], color[1], color[2], 255);
+	}
+}
