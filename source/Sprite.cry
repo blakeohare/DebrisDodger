@@ -1,16 +1,32 @@
-ASTEROID_COLOR = [100, 80, 50];
-PARTICLE_COLOR = [180, 180, 180];
-SHIP_COLOR = [255, 255, 255];
-BEACON_COLOR = [255, 0, 0];
+import Graphics2D;
+import Math;
+import Random;
 
 class Sprite {
+	
+	static field ASTEROID_COLOR = [100, 80, 50];
+	static field PARTICLE_COLOR = [180, 180, 180];
+	//static field SHIP_COLOR = [255, 255, 255];
+	static field BEACON_COLOR = [255, 0, 0];
+
+	field type;
+	field x;
+	field y;
+	field theta;
+	field vx;
+	field vy;
+	field radius;
+	field dead;
+	field ttl;
+	field last_drawn;
+
 	constructor(type, x, y) {
 		this.type = type;
 		this.x = x + 0.0;
 		this.y = y + 0.0;
-		this.theta = $random() * TWO_PI;
-		this.vx = $random() * 3;
-		this.vy = $random() * 3;
+		this.theta = Random.randomFloat() * TWO_PI;
+		this.vx = Random.randomFloat() * 3;
+		this.vy = Random.randomFloat() * 3;
 		this.radius = 1.0;
 		this.dead = false;
 		this.ttl = -1;
@@ -23,7 +39,7 @@ class Sprite {
 				this.vy = 0.0;
 				break;
 			case 'asteroid':
-				this.radius = $random() * 200 + 10;
+				this.radius = Random.randomFloat() * 200 + 10;
 				break;
 			case 'beacon':
 				this.radius = 8.0;
@@ -49,40 +65,40 @@ class Sprite {
 	function render(rc, xoffset, yoffset) {
 		x = this.x + xoffset;
 		y = this.y + yoffset;
-		left = $floor(x - this.radius);
-		width = $floor(this.radius * 2);
-		top = $floor(y - this.radius);
-		height = $floor(this.radius * 2);
+		left = Math.floor(x - this.radius);
+		width = Math.floor(this.radius * 2);
+		top = Math.floor(y - this.radius);
+		height = Math.floor(this.radius * 2);
 		right = left + width;
 		bottom = top + height;
 		if (right < 0 || left > GAME_WIDTH || bottom < 0 || top > GAME_HEIGHT) return;
 		
 		switch (this.type) {
 			case 'particle':
-				color = PARTICLE_COLOR;
+				color = Sprite.PARTICLE_COLOR;
 				break;
 			case 'asteroid':
-				color = ASTEROID_COLOR;
+				color = Sprite.ASTEROID_COLOR;
 				break;
 			case 'beacon':
-				color = BEACON_COLOR;
+				color = Sprite.BEACON_COLOR;
 				break;
 			default:
 				this.last_drawn = rc;
 				a = this.theta;
 				ptleft = this.theta - PI * 3 / 4;
 				ptright = this.theta + PI * 3 / 4;
-				ax = $floor($cos(a) * this.radius) + x;
-				ay = $floor($sin(a) * this.radius) + y;
-				bx = $floor($cos(ptleft) * this.radius / 2) + x;
-				by = $floor($sin(ptleft) * this.radius / 2) + y;
-				cx = $floor($cos(ptright) * this.radius / 2) + x;
-				cy = $floor($sin(ptright) * this.radius / 2) + y;
-				$gfx_draw_triangle(
-					$floor(ax), $floor(ay), $floor(bx), $floor(by), $floor(cx), $floor(cy), 255, 255, 255, 255);
+				ax = Math.floor(Math.cos(a) * this.radius) + x;
+				ay = Math.floor(Math.sin(a) * this.radius) + y;
+				bx = Math.floor(Math.cos(ptleft) * this.radius / 2) + x;
+				by = Math.floor(Math.sin(ptleft) * this.radius / 2) + y;
+				cx = Math.floor(Math.cos(ptright) * this.radius / 2) + x;
+				cy = Math.floor(Math.sin(ptright) * this.radius / 2) + y;
+				Graphics2D.Draw.triangle(
+					ax, ay, bx, by, cx, cy, 255, 255, 255);
 				return;
 		}
 		
-		$gfx_draw_ellipse(left, top, width, height, color[0], color[1], color[2], 255);
+		Graphics2D.Draw.ellipse(left, top, width, height, color[0], color[1], color[2]);
 	}
 }

@@ -5,23 +5,28 @@
 	
 	<!-- Targets -->
 	<target name="js_local">
-		<platform>js</platform>
+		<platform>javascript-app-gl</platform>
 	</target>
 	
 	<target name="js_remote">
-		<platform>js</platform>
+		<platform>javascript-app-gl</platform>
 		<jsfileprefix>/demos/debrisdodger/</jsfileprefix>
 	</target>
 	
-	<target name="windows">
-		<platform>csopengl</platform>
+	<target name="games_browser">
+		<platform>javascript-app-gl</platform>
+		<jsfileprefix>/games/debrisdodger/</jsfileprefix>
 	</target>
 	
-	<target name="javaawt">
-		<platform>java</platform>
+	<target name="csharp">
+		<platform>csharp-app</platform>
+	</target>
+	
+	<target name="java">
+		<platform>java-app</platform>
 	</target>
 	
 	<target name="python">
-		<platform>python</platform>
+		<platform>python-app</platform>
 	</target>
 </build>
